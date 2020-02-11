@@ -1,1 +1,1 @@
-# k8s_Demo1
+Please speak to your faculty for usage
