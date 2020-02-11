@@ -1,0 +1,43 @@
+git clone https://github.com/GoogleCloudPlatform/kubernetes-engine-samples
+
+cd kubernetes-engine-samples/hello-app
+
+cat main.go
+
+cat Dockerfile
+
+gcloud container clusters get-credentials [cluster-name] --zone [cluster-zone]
+
+gcloud container clusters get-credentials standard-cluster-1 --zone us-central1-a
+
+gcloud config set project PROJECT_ID
+gcloud config set project solar-attic-267810
+
+
+
+
+docker build -t gcr.io/solar-attic-267810/hello-app:v1 $PWD
+
+gcloud docker -- push gcr.io/solar-attic-267810/hello-app:v1
+
+kubectl run hello-app --image=gcr.io/solar-attic-267810/hello-app:v1 --port=8080
+
+kubectl expose deployment hello-app --type="LoadBalancer"
+
+kubectl get service hello-app --watch
+
+kubectl scale deployment hello-app --replicas=4
+
+kubectl get deployment
+kubectl get pods
+
+
+sed -i -e 's/1.0.0/2.0.0/g' main.go
+sed -i -e 's/2.0.0/3.0.0/g' main.go
+
+
+docker build -t gcr.io/solar-attic-267810/hello-app:v2 $PWD
+
+gcloud docker -- push gcr.io/solar-attic-267810/hello-app:v2
+
+kubectl set image deployment/hello-app hello-app=gcr.io/solar-attic-267810/hello-app:v2 && echo 'image updated'
